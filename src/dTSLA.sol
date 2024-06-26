@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
+
 /*
  * @title dTSLA
  * @author Ben Moussa
  */
-contract dTSLA {
+contract dTSLA is ConfirmedOwner {
     /// 2 transactions
     /// Sends an HTTP request to:
     /// 1. See how much TSLA is bought
