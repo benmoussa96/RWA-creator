@@ -13,7 +13,7 @@ contract dTSLA is ConfirmedOwner {
     /// 1. See how much TSLA is bought
     /// 2. If wnough TSLA is in the Alpaca account, mint dTSLA
     function sendMintRequest(uint256 amount) external {
-        
+
     }
 
     function _mintFulFillRequest() internal {
