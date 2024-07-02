@@ -227,11 +227,11 @@ contract dTSLA is ERC20, Pausable, ConfirmedOwner, FunctionsClient {
         return ((totalSupply() + addedNumberOfTsla) * getTslaPrice()) / PRECISION;
     }
 
-    function getRequest(bytes32 requestId) public view returns (dTslaRequest memory) {
+    function getRequest(bytes32 requestId) public view returns (dTSLARequest memory) {
         return s_requestIdToRequest[requestId];
     }
 
     function getWithdrawalAmount(address user) public view returns (uint256) {
-        return s_userToWithdrawalAmount[user];
+        return s_userToAvailableWithrawlAmount[user];
     }
 }
