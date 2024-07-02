@@ -77,6 +77,10 @@ contract dTSLA is ERC20, Pausable, ConfirmedOwner, FunctionsClient {
         i_redemptionCoin = redemptionCoin;
     }
 
+    /*//////////////////////////////////////////////////////////////
+                            EXTERNAL FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
     /// 2 transactions
     /// Sends an HTTP request to:
     /// 1. See how much TSLA is bought
@@ -123,6 +127,21 @@ contract dTSLA is ERC20, Pausable, ConfirmedOwner, FunctionsClient {
 
         _burn(msg.sender, dTslaAmount);
     }
+
+    function withdraw() external {
+        uint256 amountAvailableToWithdraw = s_userToAvailableWithrawlAmount[msg.sender];
+        s_userToAvailableWithrawlAmount[msg.sender] = 0;
+
+        bool success = ERC20(i_redemptionCoin).transfer(msg.sender, amountAvailableToWithdraw);
+        
+        if(!success) {
+            revert dTSLA__TransferFailed();
+        }
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                          INTERNAL FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
 
     /// @notice Callback function for fulfilling a request
     /// @param requestId The ID of the request to fulfill
@@ -174,22 +193,15 @@ contract dTSLA is ERC20, Pausable, ConfirmedOwner, FunctionsClient {
 
         s_userToAvailableWithrawlAmount[s_requestIdToRequest[requestId].requester] += usdcAmount;
     }
-
-    function withdraw() external {
-        uint256 amountAvailableToWithdraw = s_userToAvailableWithrawlAmount[msg.sender];
-        s_userToAvailableWithrawlAmount[msg.sender] = 0;
-
-        bool success = ERC20(i_redemptionCoin).transfer(msg.sender, amountAvailableToWithdraw);
-        
-        if(!success) {
-            revert dTSLA__TransferFailed();
-        }
-    }
     
     function _getCollateralRatioAdjustedTotalBalance(uint256 amountOfTokensToMint) internal view returns (uint256) {
         uint256 calculatedNewTotalValue = getCalculatedNewTotalValue(amountOfTokensToMint);
         return (calculatedNewTotalValue * COLLATERAL_RATIO) / COLLATERAL_PRECISION;
     }
+
+    /*//////////////////////////////////////////////////////////////
+                        VIEW AND PURE FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
 
     function getTslaPrice() public view returns (uint256) {
         AggregatorV3Interface priceFeed = AggregatorV3Interface(i_tslaUsdFeed);
@@ -213,5 +225,13 @@ contract dTSLA is ERC20, Pausable, ConfirmedOwner, FunctionsClient {
 
     function getCalculatedNewTotalValue(uint256 addedNumberOfTsla) public view returns (uint256) {
         return ((totalSupply() + addedNumberOfTsla) * getTslaPrice()) / PRECISION;
+    }
+
+    function getRequest(bytes32 requestId) public view returns (dTslaRequest memory) {
+        return s_requestIdToRequest[requestId];
+    }
+
+    function getWithdrawalAmount(address user) public view returns (uint256) {
+        return s_userToWithdrawalAmount[user];
     }
 }
