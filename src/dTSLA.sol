@@ -21,6 +21,7 @@ contract dTSLA is ERC20, Pausable, ConfirmedOwner, FunctionsClient {
     error dTSLA__NotEnoughCollateral();
     error dTSLA__InvalidMintAmount();
     error dTSLA__MinimumRedemptionAmountNotMet();
+    error dTSLA__TransferFailed();
 
     enum MintOrRedeem { mint, redeem }
 
@@ -172,6 +173,17 @@ contract dTSLA is ERC20, Pausable, ConfirmedOwner, FunctionsClient {
         }
 
         s_userToAvailableWithrawlAmount[s_requestIdToRequest[requestId].requester] += usdcAmount;
+    }
+
+    function withdraw() external {
+        uint256 amountAvailableToWithdraw = s_userToAvailableWithrawlAmount[msg.sender];
+        s_userToAvailableWithrawlAmount[msg.sender] = 0;
+
+        bool success = ERC20(i_redemptionCoin).transfer(msg.sender, amountAvailableToWithdraw);
+        
+        if(!success) {
+            revert dTSLA__TransferFailed();
+        }
     }
     
     function _getCollateralRatioAdjustedTotalBalance(uint256 amountOfTokensToMint) internal view returns (uint256) {
