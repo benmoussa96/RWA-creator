@@ -1,13 +1,13 @@
 if (secrets.alpacaKey == "" || secrets.alpacaSecret == "") {
-  throw Error("Alpaca keysnot provided");
+  throw Error("Alpaca keys not provided");
 }
 
 const alpacaRequest = Functions.makeHttpRequest({
-  url: "https://paper-api.alpaca.markets/v2/positions/TSLA",
+  url: secrets.alpacaUrl,
   headers: {
     accept: "application/json",
-    "APCA-API-KEY-ID": "PK3G88XBEWFMUV8TKBOM",
-    "APCA-API-SECRET-KEY": "pJn7TymJ1qz52CHTE8DuAHLJntDpKqJpG4lO1eRO",
+    "APCA-API-KEY-ID": secrets.alpacaKey,
+    "APCA-API-SECRET-KEY": secrets.alpacaSecret,
   },
 });
 
