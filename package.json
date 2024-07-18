@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "simulate": "source .env && node ./functions/simulators/tslaMintSimulator.js"
+    "uploadSecrets": "source .env && node ./functions/uploadSecrets.js",
+    "tslaBalance": "source .env && node ./functions/simulators/tslaMintSimulator.js"
   },
   "dependencies": {
     "@chainlink/functions-toolkit": "^0.2.8"
