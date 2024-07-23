@@ -46,8 +46,7 @@ async function uploadSecrets() {
     throw new Error(`Failed to upload secrets: ${uploadResult.errorMessage}`);
   }
 
-  console.log(`\n✅ Secrets uploaded successfully. Response: ${uploadResult}`);
-  console.log(`Secrets version: ${parseInt(uploadResult.version)}`);
+  console.log("\n✅ Secrets uploaded successfully. Response: ", uploadResult);
 }
 
 uploadSecrets().catch((error) => {
